@@ -10,7 +10,7 @@
 """
 import os
 
-from tenxtools.utils import basic
+from biotool import basic
 
 
 def read_gene_list(fn, sep='\t'):
@@ -26,8 +26,13 @@ def read_gene_list(fn, sep='\t'):
 
     return gene_list
 
-
 def read_gene_list_from_dir(in_dir):
+    gene_set = set()
+    for gs in read_gene_dict_from_dir(in_dir).values():
+        gene_set = gs | gene_set
+    return list(gene_set)
+
+def read_gene_dict_from_dir(in_dir):
     if not in_dir:
         return {}
     if os.path.isfile(in_dir):
