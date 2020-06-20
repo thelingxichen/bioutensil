@@ -1,14 +1,14 @@
 import os
 from io import BytesIO
 import matplotlib
-matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 import svgwrite
-from bplot import svgobject
-from bplot import svgbase
+from biotool.bplot import svgobject
+from biotool.bplot import svgbase
 
 plt.rc('mathtext', fontset='cm')
+matplotlib.use('agg')
 
 
 def measure_text(text, font_size=10):

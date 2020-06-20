@@ -7,17 +7,17 @@ csv.field_size_limit(sys.maxsize)
 # --- load mapping function --- #
 def str2int(x):
     try: x = int(x)
-    except: x = 0 
+    except: x = 0
     return x
-  
+
 def str2float(x):
     try: x = float(x)
-    except: x = 0.0 
+    except: x = 0.0
     return x
 
 def str2list(sep=','):
     def func(x):
-        return [] if x == '.' else x.split(sep) 
+        return [] if x == '.' else x.split(sep)
     return func
 
 # --- dump mapping function --- #
@@ -29,14 +29,14 @@ left = lambda x, y: x
 add = lambda x, y: x + y
 list_append = lambda l, x: [x] if l == 'empty_list' else l + [x]
 
-def assign_map(func2headers): 
-    _map = {} 
+def assign_map(func2headers):
+    _map = {}
     for func, headers in func2headers.items():
         for h in headers: _map[h] = func
     return _map
 
-def assign_reduce_map(func_init2headers): 
-    _map = {} 
+def assign_reduce_map(func_init2headers):
+    _map = {}
     for func_init, headers in func_init2headers.items():
         func, init = func_init
         for h in headers: _map[(h,init)] = func
@@ -51,10 +51,10 @@ class csvReader(object):
         self.headers = headers
         self.sep = sep
         self.reduce_map = reduce_map
-        self.has_header = has_header 
+        self.has_header = has_header
 
     def _load_row(self, row, filtered_funcs=[], required_headers='all'):
-        error = [] 
+        error = []
         for header, filtered_func in filtered_funcs:
             if header in row:
                 value = self.load_map.get(header, lambda x:x)(row[header])
@@ -65,7 +65,7 @@ class csvReader(object):
 
         if required_headers == 'all': required_headers = self.headers
         if not required_headers: required_headers = row.keys()
-        
+
         data = {}
         for header in required_headers:
             value = row[header]
@@ -93,11 +93,11 @@ class csvReader(object):
         chunks = []
         prev_value = None
         chunk_i = 0
-        for i, row in self.read_rows(filtered_funcs, required_headers): 
+        for i, row in self.read_rows(filtered_funcs, required_headers):
             value = row[header]
             if prev_value is None or prev_value == value: chunks.append(row)
             else: # update
-                if i: 
+                if i:
                     yield (prev_value, self.reduce_chunks(chunks, reduce))
                     chunk_i += 1
                 chunks = [row]
@@ -108,13 +108,13 @@ class csvReader(object):
     def reduce_chunks(self, chunks, reduce):
         if not reduce: return chunks
 
-        reduce_map = {  head_init:func for head_init, func in self.reduce_map.items() if head_init[0] in chunks[0].keys()} 
+        reduce_map = {  head_init:func for head_init, func in self.reduce_map.items() if head_init[0] in chunks[0].keys()}
 
-        res = { header:init for header, init in reduce_map.keys() } 
-        for row in chunks: 
+        res = { header:init for header, init in reduce_map.keys() }
+        for row in chunks:
             for header_init, func in reduce_map.items():
                 header, _ = header_init
-                res[header] = func(res[header], row[header]) 
+                res[header] = func(res[header], row[header])
 
         return [res]
 
@@ -133,7 +133,7 @@ class csvWriter():
             f = gzip.open(self.out_fn, 'wb')
         else:
             f = open(self.out_fn, 'wb')
-            
+
         line = self.sep.join(self.headers) + '\n'
         f.write(line)
         return True
@@ -161,7 +161,7 @@ class csvWriter():
         return True
 
     def write_rows(self, rows, mod='ab'):
-        
+
         if self.out_fn.endswith('.gz'):
             f = gzip.open(self.out_fn, mod)
         else:
