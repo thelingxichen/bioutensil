@@ -72,10 +72,11 @@ class CNVWriter(io.Writer):
     def __init__(self, fn, cnv_cls=CNVRecord, sep=','):
         super(CNVWriter, self).__init__(fn, record_cls=cnv_cls, sep=sep)
 
-
+'''
 if __name__ == "__main__":
     fn = '/home/chenlingxi/mnt/chenlingxi/workspace/FS_Projects/WHOC.WGS_10X.batch01/CNACalling/patchwork/OC001/OC001/oc001t_Copynumbers.csv'
 
     for i, record in enumerate(CNVReader(fn)):
         meta, record = record
         print record.start, record.end, (record.end - record.start) / 1000
+'''

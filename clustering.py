@@ -49,7 +49,6 @@ def draw_PC2(out_prefix, X, y):
     plt.figure(figsize=(8, 6))
     tumor = X[0:8]
     normal = X[8:16]
-    print(normal)
     plt.plot(tumor['PC1'], tumor['PC2'], '*r', label='Tumor')
     plt.plot(normal['PC1'], normal['PC2'], '*b', label='Normal')
 

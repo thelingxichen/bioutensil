@@ -6,7 +6,7 @@
 
     Local complex haplotype definition.
 
-    @Copyright: (c) 2017 by Lingxi Chen (chanlingxi@gmail.com). 
+    @Copyright: (c) 2017 by Lingxi Chen (chanlingxi@gmail.com).
     @License: LICENSE_NAME, see LICENSE for more details.
 """
 from genomic_region import GenomicRegion
@@ -15,7 +15,7 @@ class Interval(object):
 
     def __init__(self, pos1, pos2, index, notation='H'):
         self.start = min(pos1, pos2)
-        self.end = max(pos1, pos2) 
+        self.end = max(pos1, pos2)
         self.index = index # start from 0
         self.notation = notation
         self.name = self.notation + str(self.index+1)
@@ -52,7 +52,7 @@ class SVLink(object):
 
     @staticmethod
     def render_sv_link(new_region, last_region, sv_name=None):
-        up_pos, down_pos = last_region.get_3prime_pos(), new_region.get_5prime_pos() 
+        up_pos, down_pos = last_region.get_3prime_pos(), new_region.get_5prime_pos()
         if sv_name: return SVLink(sv_name, up_pos, down_pos)
         # infer sv name
         if new_region.strand != last_region.strand:                             sv_name = 'INV'
@@ -129,10 +129,10 @@ class TandemDuplicationContig(object):
 
     def __init__(self, repeat_contig, repeat_time=5, generate_type='forward', base_contig=Contig(), margin=0):
         self.repeat_contig = repeat_contig
-        self.repeat_time = repeat_time 
+        self.repeat_time = repeat_time
         self.generate_type = generate_type # 'backword' or 'forward'
         self.base_contig = base_contig # Empty if 'forward'
-        self.margin = margin # graphical representation margin, 0 if 'forward' 
+        self.margin = margin # graphical representation margin, 0 if 'forward'
 
 
     def get_last_region(self):
@@ -165,10 +165,10 @@ class TandemDuplicationContig(object):
         base_contig_header, base_contig_seq = self.base_contig.get_fasta(ref_fasta)
         repeat_contig_header, repeat_contig_seq = self.repeat_contig.get_fasta(ref_fasta)
         tdc_header = base_contig_header
-        tdc_seq = base_contig_seq + ''.join([repeat_contig_seq]*self.repeat_time) 
+        tdc_seq = base_contig_seq + ''.join([repeat_contig_seq]*self.repeat_time)
 
-        return tdc_header, tdc_seq 
-   
+        return tdc_header, tdc_seq
+
     @property
     def bp_length(self):
         bp_length = self.repeat_contig.bp_length*self.repeat_time
@@ -187,10 +187,10 @@ class ComplexHaplotype(object):
         self.contig_list = [Contig()]
         self.is_local = is_local
         self.is_inter = is_inter
-        self._in_dup = False 
+        self._in_dup = False
         self.elongated_length = elongated_length
 
-        self.up_elongated_region = self.region.slice(self.region.start-1, self.region.start-elongated_length, '+', 'UP','UP') 
+        self.up_elongated_region = self.region.slice(self.region.start-1, self.region.start-elongated_length, '+', 'UP','UP')
         self.down_elongated_region = self.region.slice(self.region.end+1, self.region.end+elongated_length, '+', 'DOWN','DOWN')
         self.elongated_region = self.region.slice(self.region.start-elongated_length, self.region.end+elongated_length, '+', 'elongated', 'elongated')
 
@@ -201,7 +201,7 @@ class ComplexHaplotype(object):
         self.contig_list.append(contig)
 
     def append_connection(self, region, sv_link=SVLink()):
-        if type(self.get_last_contig()) != Contig: 
+        if type(self.get_last_contig()) != Contig:
             self.contig_list.append(Contig())
         self.get_last_contig().append_connection(region, sv_link)
     ####
@@ -210,7 +210,7 @@ class ComplexHaplotype(object):
     def get_last_contig(self): return self.contig_list[-1]
     def get_last_region(self): return self.get_last_contig().get_last_region()
     def pop_subcontig_from_last_contig(self, key):
-        if type(self.get_last_contig()) != Contig: return Contig() 
+        if type(self.get_last_contig()) != Contig: return Contig()
         subcontig = self.get_last_contig().pop(key)
         return subcontig
 
@@ -223,11 +223,11 @@ class ComplexHaplotype(object):
             res += delimiter + repr(contig2)
         return res
     def __str__(self):
-        res = self.up_elongated_region.full_name 
+        res = self.up_elongated_region.full_name
         for contig1, contig2 in zip(['']+self.contig_list, self.contig_list+[Contig()]):
             delimiter = '' if type(contig1) == Contig and type(contig2) == TandemDuplicationContig and contig2.generate_type == 'backward' else '\n'
             res += delimiter + str(contig2)
-        res += self.down_elongated_region.full_name 
+        res += self.down_elongated_region.full_name
         return res
     def to_stat(self):
         res = []
@@ -238,7 +238,7 @@ class ComplexHaplotype(object):
         # length
         res.append('[LENGTH]\t{}\n'.format(self.bp_length))
         # hap
-        res.append('[COMPLEX_HAPLOTYPE]\n'+ 
+        res.append('[COMPLEX_HAPLOTYPE]\n'+
                 self.up_elongated_region.full_name + ',' +
                 ','.join(contig.to_stat() for contig in self.contig_list) +
                 self.down_elongated_region.full_name
@@ -250,7 +250,7 @@ class ComplexHaplotype(object):
     def bp_length(self):
         return sum(contig.bp_length for contig in self.contig_list) + self.elongated_length*2
 
-        
+
     ####
     # write haplotype to fasta #
     ####
@@ -321,11 +321,11 @@ if __name__ == "__main__":
     repeat_c.append_connection(GenomicRegion('chr1','100035','100025','-'), SVLink('INVS','100035','100035'))
     tdc = TandemDuplicationContig(repeat_c, generate_type='backward', base_contig=base_c, margin=0, repeat_time=3)
     h.append_contig(tdc)
-    print h
-    print '-'*20
+    #print h
+    #print '-'*20
 
     ref_fasta = '/home/BIOINFO_DATABASE/reference/genome_DNA/Homo_sapiens/hg19/BWA_GATK_index/hg19.fa'
     out_fasta = 'test'
     header, seq = h.get_fasta(ref_fasta, out_fasta)
-    print header
-    print seq
+    #print header
+    #print seq
