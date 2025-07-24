@@ -13,8 +13,8 @@ from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF, renderPM
 import svgwrite
 
-from biotool.bplot import svgbase
-from biotool.bplot import text
+from bioutensil.bplot import svgbase
+from bioutensil.bplot import text
 
 
 class SVGFigure():

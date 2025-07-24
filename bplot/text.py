@@ -4,8 +4,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 import svgwrite
-from biotool.bplot import svgobject
-from biotool.bplot import svgbase
+from bioutensil.bplot import svgobject
+from bioutensil.bplot import svgbase
 
 plt.rc('mathtext', fontset='cm')
 matplotlib.use('agg')
